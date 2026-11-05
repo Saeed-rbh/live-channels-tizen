@@ -1,0 +1,10 @@
+const assert=require('assert'),classify=require('../scripts/classify-channel.cjs');
+const cases=[['FIFA+ English','Sports;Football'],['NASCAR','Sports;Motorsport'],['Persiana Fight','Sports;Combat Sports'],['Willow Sports','Sports;Cricket'],['Tennis Channel T2','Sports;Tennis'],['IRIB Varzesh','Sports'],['BBC Food','Food & Cooking'],["America's Test Kitchen",'Food & Cooking'],['AccuWeather NOW','Weather'],['CNBC','Business & Finance'],['30A Investment Pitch','Business & Finance'],['AfroLand Crime','Crime & Investigation'],['Amouzesh TV','Education'],['10 Peach','Entertainment'],['ABC KAAL','Local & Regional'],['Access Sacramento Channel 17','Local & Regional'],['BBC One','General TV'],['iFilm','Movies & Series'],['Iran International','News'],['NASA TV','Education']];
+for(const [name,expected] of cases)assert.equal(classify({name,group:'General'},null),expected,name);
+assert.equal(classify({name:'Unknown channel',group:'Canada'},null),'General TV');
+assert.equal(classify({name:'Unknown channel',group:'General'},{categories:['documentary']}),'Documentaries');
+console.log(cases.length+2,'classification checks passed');
+
+const reviewedCases=[['MotorTrend FAST TV','Automotive'],['BBC Parliament','Politics & Public Affairs'],['C-SPAN','Politics & Public Affairs'],['Cinevault Westerns','Classic TV & Westerns'],['The Pet Collective','Pets & Animals'],['TechStorm','Technology & Gaming'],['IRIB Mostanad','Documentaries'],['IRIB Amoozesh','Education'],['IRIB Salamat','Lifestyle'],['IRIB Nasim','Entertainment'],['BBC Three','Entertainment'],['BBC One London HD','Local & Regional'],['Abadan TV','Local & Regional'],['BHTV10','Local & Regional'],['CAN TV19','Local & Regional'],['RVTV Civic','Local & Regional'],['The Nanny','Comedy'],['HBO Family','Movies & Series'],['TSN2','Sports'],['NBC','General TV'],['IRIB TV1','General TV'],['Unknown TV','General TV']];
+for(const [name,expected] of reviewedCases)assert.equal(classify({name,group:'General'},null),expected,name);
+console.log(reviewedCases.length,'reviewed channel checks passed');

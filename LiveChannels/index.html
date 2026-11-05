@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Live Channels</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="guide.css">
+  <script src="$WEBAPIS/webapis/webapis.js"></script>
+  <script defer src="playlist.js"></script>
+  <script defer src="vendor/hls.min.js"></script>
+  <script defer src="player.js"></script>
+  <script defer src="catalog.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <main id="home">
+    <header class="home-header">
+      <div class="home-brand"><img class="brand-logo" src="assets/logo.svg" alt=""><span>Live<span class="brand-light">Channels</span></span></div>
+      <div class="home-time"><time id="clock"></time><span id="date"></span></div>
+    </header>
+    <nav class="dashboard" aria-label="Start watching">
+      <button class="dash-tile tile-live" data-home="org">
+        <span class="tile-top"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="8" width="40" height="28" rx="4"/><path d="M17 43h14M24 36v7m-5-27 11 6-11 6z"/></svg><span class="tile-pill">Persian + English</span></span>
+        <span class="tile-title">All Channels</span><span class="tile-caption">News, sports, movies & more</span>
+      </button>
+      <button class="dash-tile tile-world" data-home="free">
+        <span class="tile-top"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="19"/><ellipse cx="24" cy="24" rx="9" ry="19"/><path d="M5 24h38M9 13h30M9 35h30"/></svg><span class="tile-pill">Persian</span></span>
+        <span class="tile-title">Persian</span><span class="tile-caption">News, entertainment & culture</span>
+      </button>
+      <button class="dash-tile tile-saved" data-home="favorites">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="m24 5 5.8 12 13.2 2-9.5 9.3 2.2 13.2L24 35.2l-11.7 6.3 2.2-13.2L5 19l13.2-2z"/></svg>
+        <span><span class="tile-title">Favorites</span><span class="tile-caption" id="favorite-count">Your personal channel collection</span></span><span class="tile-arrow" aria-hidden="true">→</span>
+      </button>
+      <button class="dash-tile tile-recent" data-home="recent">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 16a18 18 0 1 1-1 17M8 6v10h10M24 13v12l8 5"/></svg>
+        <span><span class="tile-title">Last watched</span><span class="tile-caption" id="recent-count">Pick up where you left off</span></span><span class="tile-arrow" aria-hidden="true">→</span>
+      </button>
+      <button class="dash-tile tile-sports" data-home="sports">
+        <span class="tile-top"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="19"/><path d="m24 14 10 7-4 12H18l-4-12zM24 5v9M43 20l-9 1M35 40l-5-7M13 40l5-7M5 20l9 1"/></svg><span class="tile-pill">Sport</span></span>
+        <span class="tile-title">Sport</span><span class="tile-caption">Football · Tennis · Motorsport · Combat sports</span>
+      </button>
+    </nav>
+  </main>
+  <main id="guide" hidden>
+    <header class="masthead">
+      <div class="brand">
+        <img class="brand-logo brand-mark" src="assets/logo.svg" alt="">
+        <div>
+          <h1>Live Channels</h1>
+        </div>
+      </div>
+      <form id="search-form" role="search">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>
+        <input id="search" type="search" aria-label="Search channels in this category" placeholder="Search channels" autocomplete="off">
+      </form>
+      <nav id="sources" aria-label="Channel sources">
+        <button type="button" data-source="0" aria-pressed="true">All channels</button>
+        <button type="button" data-source="1" aria-pressed="false">Persian</button>
+        <button type="button" data-source="2" aria-pressed="false">English</button>
+        <button type="button" id="search-button">Search</button>
+        <button type="button" id="reload">Reset view</button>
+        <button type="button" id="home-button">Home</button>
+      </nav>
+    </header>
+    <div class="workspace">
+      <aside class="sidebar" aria-labelledby="browse-heading">
+        <h2 id="browse-heading">Categories</h2>
+        <ul id="categories"></ul>
+      </aside>
+      <section class="catalogue" aria-labelledby="results-heading">
+        <div class="catalogue-header">
+          <div>
+            <h2 id="results-heading">All channels</h2>
+            <p id="status" role="status"></p>
+          </div>
+
+        </div>
+        <div id="channel-scroll" role="region" aria-label="Scrollable channel results">
+          <div id="loading" class="loading" aria-hidden="true" hidden>
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <ul id="channels"></ul>
+        </div>
+      </section>
+      <aside class="details" aria-labelledby="details-heading">
+        <h2 id="details-heading" class="pane-label">CHANNEL DETAILS</h2>
+        <p id="details-empty"></p>
+        <div id="details-content" hidden>
+          <div id="details-logo" aria-hidden="true"></div>
+          <h3 id="details-title" dir="auto"></h3>
+          <p id="details-group" dir="auto"></p>
+          <p id="active-source"></p>
+          <p id="playback-note"></p>
+          <button type="button" id="watch-channel"><span aria-hidden="true">▶</span> Watch now</button>
+          <button type="button" id="favorite-channel">Add to favorites</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+  <section id="screen" aria-label="Channel player" hidden>
+    <object id="av-surface" type="application/avplayer" aria-hidden="true" hidden></object>
+    <video id="browser-video" playsinline hidden></video>
+    <div id="player-controls">
+      <button type="button" id="back">‹ Channels</button>
+      <span class="player-live">LIVE TV</span>
+      <h2 id="now-playing" dir="auto"></h2>
+      <p id="player-meta"></p>
+      <p id="play-status" role="status"></p>
+      <button type="button" id="toggle-player" aria-label="Pause or resume playback">Ⅱ Pause</button>
+    </div>
+  </section>
+</body>
+</html>
