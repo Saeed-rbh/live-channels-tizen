@@ -8,6 +8,7 @@ Live Channels is a Samsung TV web app with a categorized guide, search, favorite
 
 ## Features
 
+- On now, up next, and a full-day schedule panel where current EPG listings are available.
 - One merged catalog with Persian and English filters, duplicate-feed removal, and 32 content categories.
 - A Persian category within All Channels and a Football category including potential soccer broadcasters.
 - All Channels, Persian, Sport, Favorites, and Last watched dashboard shortcuts.
@@ -25,6 +26,8 @@ Interface previews rendered in desktop Chromium; channel artwork and playback av
 ![Dashboard](docs/images/dashboard.png)
 
 ![Channel guide](docs/images/guide.png)
+
+![Now and next in channel details](docs/images/schedules.png)
 
 ## Install on your Samsung TV
 
@@ -97,6 +100,22 @@ bash scripts/build.sh YOUR_CERTIFICATE_PROFILE
 - `build-catalog.cjs` writes `LiveChannels/catalog.js`. It keeps Persian/English entries using feed language metadata, channel metadata, and limited known-channel rules. Other or unidentified languages are excluded. Some retained feeds offer multiple languages.
 - Classification is heuristic. General TV retains mixed-programming and unidentified channels. Repeated names are merged, and additional URLs are retained as metadata; automatic switching among those alternate URLs is not implemented.
 
+## Programme schedules
+
+The right-hand channel panel shows **On now**, **Up next**, programme times, and current-programme progress. **Today's schedule** opens the available daily lineup; use Up/Down to browse and Return to close it. Times follow the TV's local timezone. Football programmes receive a badge only when the programme title or guide categories identify soccer; a channel's membership in Football alone does not mark every programme as a football match.
+
+The app loads `LiveChannels/schedules.json` from the widget, then checks the current index from this repository on GitHub. It refreshes online at most hourly while open, and updates now/next every minute. Expired programmes are never presented as current or upcoming. Missing data is explicitly labeled; a partial daily feed is shown as available listings, not a guaranteed complete schedule.
+
+The **Refresh TV schedules** GitHub Actions workflow rebuilds the index every six hours and supports manual dispatch. Fork owners should change the raw GitHub URL in `LiveChannels/schedule.js` to their fork if they want independent updates. GitHub scheduling and upstream availability can delay refreshes.
+
+To refresh locally:
+
+```sh
+python3 scripts/build-epg.py
+```
+
+Configure feeds in `scripts/epg-sources.json`. The initial checked index matches 246 catalog feeds, including 17 potential football broadcasters. Channel, country, and regional matching is deliberately conservative. The Persian guide tested was outdated and contributed no current programmes; IRIB and other unmapped channels therefore show unavailable listings rather than invented schedules. UK/US data is provided by the public [EPGShare feed directory](https://epgshare01.online/epgshare01/); the Persian source is [Persiana TV EPG](https://github.com/Samhouston010/persiana-tv-epg). Their data remains subject to upstream rights and terms. Schedule availability does not prove that a video stream is working.
+
 ## Development and tests
 
 The app is plain HTML, CSS, and JavaScript. There is no frontend build step.
@@ -105,6 +124,7 @@ The app is plain HTML, CSS, and JavaScript. There is no frontend build step.
 node tests/categories.cjs
 node tests/football.cjs
 node tests/player.cjs
+node tests/schedule.cjs
 ```
 
 These tests cover representative genre classification, football candidates, playback fallback, cancellation, and pause/resume behavior. They do not prove that third-party streams are currently available or play on every TV.

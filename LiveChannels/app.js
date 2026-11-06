@@ -210,7 +210,50 @@
     detailsTitle.textContent = channel.name;
     detailsGroup.textContent = channel.groups.join(' · ');
     channelArtwork(detailsLogo, channel);
+    updateSchedule();
   }
+
+  var dayGuide = document.getElementById('day-guide');
+  var scheduleButton = document.getElementById('schedule-button');
+  function programmeTime(p) {
+    return p ? (new Date(p.start).toDateString() !== new Date().toDateString() ? new Date(p.start).toLocaleDateString([], {weekday:'short',month:'short',day:'numeric'}) + ' · ' : '') + new Date(p.start).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) + ' – ' + new Date(p.end).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
+  }
+  function updateSchedule() {
+    if (!detailChannel || !window.channelSchedule) return;
+    var epg = window.channelSchedule.get(detailChannel);
+    document.getElementById('epg-now').textContent = epg.now ? epg.now.title : (epg.loading ? 'Loading schedule…' : 'No current listing');
+    document.getElementById('epg-next').textContent = epg.next ? epg.next.title : (epg.loading ? 'Loading schedule…' : 'No upcoming listing');
+    document.getElementById('epg-now-time').textContent = programmeTime(epg.now);
+    document.getElementById('epg-next-time').textContent = programmeTime(epg.next);
+    document.getElementById('epg-now').classList.toggle('football-programme', Boolean(epg.now && epg.now.football));
+    document.getElementById('epg-next').classList.toggle('football-programme', Boolean(epg.next && epg.next.football));
+    var progress=document.getElementById('epg-progress');progress.hidden=!epg.now;
+    var percent=epg.now?Math.max(0,Math.min(100,100*(Date.now()-epg.now.start)/(epg.now.end-epg.now.start))):0;
+    progress.firstChild.style.width=percent+'%';progress.setAttribute('aria-valuenow',String(Math.round(percent)));
+    document.getElementById('epg-source').textContent=epg.source?'Guide: '+epg.source.toUpperCase()+' · Local time':(epg.loading?'':'Schedule unavailable for this feed');
+    scheduleButton.textContent = "Today's schedule";
+  }
+  function renderDay() {
+    if (!detailChannel || !window.channelSchedule) return;
+    var epg=window.channelSchedule.get(detailChannel),now=Date.now();
+    document.getElementById('day-title').textContent=detailChannel.name;
+    document.getElementById('day-date').textContent=new Date(now).toLocaleDateString([], {weekday:'long',month:'long',day:'numeric'});
+    var list=document.getElementById('day-list');list.textContent='';
+    var ps=window.channelSchedule.today(epg.programmes,now);
+    if(!ps.length){list.textContent=epg.loading?'Loading schedule…':'No schedule available for today.';return;}
+    ps.forEach(function(p){
+      var row=document.createElement('button');row.type='button';row.className='day-programme';
+      row.classList.toggle('is-now',p.start<=now&&p.end>now);
+      var time=document.createElement('time');time.textContent=programmeTime(p);
+      var text=document.createElement('span');text.textContent=p.title;text.dir='auto';
+      if(p.football)text.className='football-programme';
+      row.appendChild(time);row.appendChild(text);list.appendChild(row);
+    });
+  }
+  function closeDay(){dayGuide.hidden=true;scheduleButton.focus();}
+  scheduleButton.addEventListener('click',function(){renderDay();dayGuide.hidden=false;document.getElementById('close-day').focus();});
+  document.getElementById('close-day').addEventListener('click',closeDay);
+  if(window.channelSchedule)window.channelSchedule.subscribe(function(){updateSchedule();if(!dayGuide.hidden){var active=document.activeElement;var index=Array.from(document.querySelectorAll('.day-programme')).indexOf(active);renderDay();var rows=document.querySelectorAll('.day-programme');if(index>=0&&rows[index])rows[index].focus();}});
 
   function render() {
     loading.hidden = !request;
@@ -463,10 +506,11 @@
       else if (code !== 40) return false;
       else if (results.length) focusCard(selectedIndex);
       else target = selected;
-    } else if (active === watchButton || active === favoriteButton) {
+    } else if (active === watchButton || active === favoriteButton || active === scheduleButton) {
       if (code === 37) focusCard(selectedIndex);
-      if (code === 38) target = active === favoriteButton ? watchButton : search;
-      if (code === 40 && active === watchButton) target = favoriteButton;
+      var actions=[scheduleButton,watchButton,favoriteButton],actionIndex=actions.indexOf(active);
+      if(code===38) target=actions[actionIndex-1]||search;
+      if(code===40) target=actions[actionIndex+1];
     } else if (Number.isInteger(cardIndex)) {
       if (code === 37) target = selected;
       if (code === 39) target = watchButton;
@@ -543,6 +587,11 @@
   document.addEventListener('keydown', function (event) {
     if (event.isComposing || event.keyCode === 229) return;
     var code = event.keyCode;
+    if (!dayGuide.hidden) {
+      if(code===10009||code===27){event.preventDefault();closeDay();return;}
+      if(code===38||code===40){event.preventDefault();var dayButtons=Array.from(dayGuide.querySelectorAll('button'));var di=dayButtons.indexOf(document.activeElement);var next=dayButtons[Math.max(0,Math.min(dayButtons.length-1,di+(code===40?1:-1)))];if(next){next.focus();next.scrollIntoView({block:'nearest'});}return;}
+      return;
+    }
     var mediaPlay = code === 415 || event.key === 'MediaPlay';
     var mediaPause = code === 19 || event.key === 'MediaPause';
     var mediaToggle = code === 10252 || event.key === 'MediaPlayPause';
@@ -587,7 +636,7 @@
       event.preventDefault();
       if (!screen.hidden) closePlayer();
       else if (document.activeElement === search) sourceButtons[sourceIndex].focus();
-      else if (document.activeElement === watchButton || document.activeElement === favoriteButton) focusCard(selectedIndex);
+      else if (document.activeElement === watchButton || document.activeElement === favoriteButton || document.activeElement === scheduleButton) focusCard(selectedIndex);
       else if (document.activeElement.classList.contains('channel')) groupButtons[selectedGroup].focus();
       else if (document.activeElement.classList.contains('category')) sourceButtons[sourceIndex].focus();
       else showHome();

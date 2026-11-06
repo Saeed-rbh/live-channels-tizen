@@ -1,0 +1,13 @@
+const assert=require('assert'),epg=require('../LiveChannels/schedule.js');
+process.env.TZ='America/Toronto';
+const now=Date.parse('2026-11-06T15:00:00Z'),channel={url:'https://example.com/live.m3u8'};
+const a={start:now-3600000,end:now,title:'Previous'},b={start:now,end:now+3600000,title:'Soccer',football:true},c={start:now+3600000,end:now+7200000,title:'Next'};
+const data={channels:{[channel.url]:{source:'test',programmes:[c,a,b]}}};
+let result=epg.listings(data,channel,now);assert.equal(result.now.title,'Soccer');assert.equal(result.next.title,'Next');
+assert.equal(epg.listings(data,channel,now+3600000).now.title,'Next');
+assert.equal(epg.listings(data,{url:'different'},now).now,null);
+assert.equal(epg.listings(data,channel,now+86400000).now,null);
+assert.equal(epg.listings(data,channel,now+86400000).next,null,'expired guide must not be presented as next');
+const midnight=Date.parse('2026-11-06T05:00:00Z');
+assert.equal(epg.today([{start:midnight-3600000,end:midnight+3600000},{start:midnight-7200000,end:midnight},{start:midnight+86400000,end:midnight+90000000}],now).length,1,'include overlap at midnight; exclude previous and next day');
+console.log('Schedule boundaries, stale data, exact-channel lookup and local-day checks passed');

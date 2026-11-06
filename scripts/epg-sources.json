@@ -1,0 +1,5 @@
+[
+ {"id":"uk","url":"https://epgshare01.online/epgshare01/epg_ripper_UK1.xml.gz"},
+ {"id":"us","url":"https://epgshare01.online/epgshare01/epg_ripper_US2.xml.gz"},
+ {"id":"persian","url":"https://raw.githubusercontent.com/Samhouston010/persiana-tv-epg/main/final.xml.gz"}
+]

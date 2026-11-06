@@ -13,3 +13,5 @@ jobs:
       - run: node tests/categories.cjs
       - run: node tests/football.cjs
       - run: node tests/player.cjs
+      - run: node tests/schedule.cjs
+      - run: python3 tests/epg_test.py

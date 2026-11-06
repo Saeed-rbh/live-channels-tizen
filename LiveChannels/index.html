@@ -11,6 +11,7 @@
   <script defer src="vendor/hls.min.js"></script>
   <script defer src="player.js"></script>
   <script defer src="catalog.js"></script>
+  <script defer src="schedule.js"></script>
   <script defer src="app.js"></script>
 </head>
 <body>
@@ -92,12 +93,22 @@
           <p id="details-group" dir="auto"></p>
           <p id="active-source"></p>
           <p id="playback-note"></p>
+          <section id="channel-epg" aria-label="Programme schedule" aria-live="polite">
+            <div class="epg-slot"><span class="epg-label">ON NOW</span><p id="epg-now" dir="auto"></p><time id="epg-now-time"></time><div id="epg-progress" role="progressbar" aria-label="Current programme progress" aria-valuemin="0" aria-valuemax="100"><span></span></div></div>
+            <div class="epg-slot"><span class="epg-label">UP NEXT</span><p id="epg-next" dir="auto"></p><time id="epg-next-time"></time></div>
+            <p id="epg-source"></p>
+          </section>
+          <button type="button" id="schedule-button">Today's schedule</button>
           <button type="button" id="watch-channel"><span aria-hidden="true">▶</span> Watch now</button>
           <button type="button" id="favorite-channel">Add to favorites</button>
         </div>
       </aside>
     </div>
   </main>
+  <section id="day-guide" role="dialog" aria-modal="true" aria-labelledby="day-title" hidden>
+    <div class="day-header"><div><p class="epg-label">TODAY · LOCAL TIME</p><h2 id="day-title" dir="auto"></h2></div><button id="close-day" type="button">Close</button></div>
+    <p id="day-date"></p><div id="day-list"></div>
+  </section>
   <section id="screen" aria-label="Channel player" hidden>
     <object id="av-surface" type="application/avplayer" aria-hidden="true" hidden></object>
     <video id="browser-video" playsinline hidden></video>
