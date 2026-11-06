@@ -1,0 +1,11 @@
+#EXTM3U
+# Replacement for the retired iptv-org /sources/bein.m3u URL.
+# Channel availability can change.
+#EXTINF:-1 tvg-id="beINSportsUSA.us@SD" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/BeIN_Sports_logo_%28vertical_version%29.svg/500px-BeIN_Sports_logo_%28vertical_version%29.svg.png" tvg-language="eng" group-title="Sports",beIN Sports USA (576p)
+https://tvsen6.aynaott.com/beinsports/index.m3u8
+#EXTINF:-1 tvg-id="" tvg-logo="" tvg-language="eng" group-title="Sports",beIN Sports Xtra
+https://amg01334-amg01334c2-freelivesports-emea-6791.playouts.now.amagi.tv/playlist/amg01334-beinxtra-beinxtrausapp-freelivesportsemea/playlist.m3u8?channel_name=Bein%20Xtra&content_genre=Sport&ic=IAB17&provider=FreeLiveSports&us_privacy=[US_PRIVACY]&gdpr=[GDPR]&gdpr_consent=[CONSENT_STRING]&coppa=0&content_livestream=1&p=sportstribal&url=[REF]&lmt=[LAT]&did=[DEVICE_ID]
+#EXTINF:-1 tvg-id="" tvg-logo="https://media.unreel.me/prod/freelivesports/logo/48dc586f-e4c2-49c4-9cee-f1ebc1773aae" tvg-language="spa" group-title="Sports",beIN Sports Xtra en Espanol
+https://amg01334-amg01334c1-freelivesports-emea-6792.playouts.now.amagi.tv/playlist/amg01334-beinxtra-beinespanolusapp-freelivesportsemea/playlist.m3u8?channel_name=Bein%20Xtra%20Espanol&content_genre=Sport&ic=IAB17&provider=FreeLiveSports&us_privacy=[US_PRIVACY]&gdpr=[GDPR]&gdpr_consent=[CONSENT_STRING]&coppa=0&content_livestream=1&p=sportstribal&language=es&url=[REF]&lmt=[LAT]&did=[DEVICE_ID]
+#EXTINF:-1 tvg-id="613759" tvg-logo="https://canvas-lb.tubitv.com/opts/y4jAUpeHq4ELHg==/8968101d-cc65-48c7-a102-0a6a46ca55db/CHgQeDoFMS4xLjlAAQ==" tvg-language="spa" group-title="Sports",beIN Sports XTRA En Español — Tubi
+https://live-manifest.production-public.tubi.io/live/6cd31e43-d255-4ab4-b065-7f28bd541047/playlist.m3u8

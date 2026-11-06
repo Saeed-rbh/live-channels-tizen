@@ -80,6 +80,16 @@ The shell build helper targets macOS/Linux. On Windows, use Tizen Studio to impo
 
 Search currently filters the active language/category. From playback, OK or an arrow shows the overlay. Left/Right moves between Back and Pause/Resume. Pause support and how long a live stream can remain paused depend on its live window.
 
+## Standalone beIN playlist
+
+The old `https://iptv-org.github.io/iptv/sources/bein.m3u` address returned 404 when checked. A replacement containing the four beIN feeds in this app is available here:
+
+```text
+https://raw.githubusercontent.com/Saeed-rbh/live-channels-tizen/main/playlists/bein.m3u
+```
+
+It includes beIN Sports USA, beIN Sports Xtra, and two Spanish Xtra feeds. All four delivered video segments during the November 6, 2026 network check; availability can change. This list does not provide every beIN subscription channel. After updating the app catalog, regenerate it with `node scripts/export-bein.cjs`.
+
 ## Refresh or customize the catalog
 
 The TV loads the bundled catalog immediately; **Reset view does not download playlists**. Refresh the snapshot on your computer, rebuild, and reinstall to distribute new channel data.
